@@ -25,8 +25,6 @@ def display_tasks(tasks, title):
         print("No tasks")
 
 def mark_tasks():
-    global checklist
-
     # Iterate over a copy to safely modify original list
     for task in checklist[:]:
         while True:
@@ -57,7 +55,7 @@ def remove_task():
         idx = int(input("Enter task number to remove: "))
         removed = checklist.pop(idx - 1)   # pop used
         print(f"Removed: {removed}")
-    except:
+    except (ValueError, IndexError):
         print("Invalid selection.")
 
 def advanced_list_ops():
