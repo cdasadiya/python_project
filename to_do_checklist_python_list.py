@@ -25,7 +25,9 @@ def display_tasks(tasks, title):
         print("No tasks")
 
 def mark_tasks():
-    global checklist
+    if not checklist:
+        print("\nNo tasks available to mark.")
+        return
 
     # Iterate over a copy to safely modify original list
     for task in checklist[:]:
@@ -45,19 +47,25 @@ def mark_tasks():
 
 def add_task():
     task = input("\nEnter new task: ").strip()
-    if task and task not in checklist:
+    if task and task.lower() not in {item.lower() for item in checklist}:
         checklist.append(task)
         print("Task added.")
     else:
         print("Invalid or duplicate task.")
 
 def remove_task():
+    if not checklist:
+        print("\nChecklist is empty. Nothing to remove.")
+        return
+
     display_tasks(checklist, "Current Checklist")
     try:
         idx = int(input("Enter task number to remove: "))
+        if idx < 1 or idx > len(checklist):
+            raise IndexError
         removed = checklist.pop(idx - 1)   # pop used
         print(f"Removed: {removed}")
-    except:
+    except (ValueError, IndexError):
         print("Invalid selection.")
 
 def advanced_list_ops():
@@ -98,7 +106,7 @@ def menu():
         print("6. View Summary")
         print("7. Exit")
 
-        choice = input("Choose an option: ")
+        choice = input("Choose an option: ").strip()
 
         if choice == '1':
             display_tasks(checklist, "Checklist")
@@ -119,4 +127,5 @@ def menu():
             print("Invalid choice.")
 
 # Run the app
-menu()
+if __name__ == "__main__":
+    menu()
