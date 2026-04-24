@@ -7,46 +7,14 @@ This repository contains a collection of small, focused Python programs that dem
 - Basic string algorithm checks (anagram detection)
 - Interactive command-line applications (calculator and to-do list)
 - Test-driven improvements for reusable modules
-- **NumPy basics for beginners (new)**
 
 The codebase mixes learning/demo scripts and production-style, tested modules.
-
-## New Addition: NumPy Learning Script
-A new file `numpy_learning.py` has been added to help beginners understand NumPy.
-
-### What it covers
-- Creating arrays
-- Array properties (shape, size, type)
-- Indexing and slicing
-- Mathematical operations
-- Aggregation functions (sum, mean, etc.)
-- Reshaping arrays
-- Random number generation
-- Sorting
-- Combining arrays
-- Boolean filtering
-- Broadcasting
-- Copy vs view
-
-### Run the NumPy script
-```bash
-python numpy_learning.py
-```
-
-This script is designed for beginners and includes inline comments explaining each step.
-
-## Features / Capabilities
-- Dynamic calculator CLI
-- Most repetitive element analysis
-- To-do checklist CLI
-- Algorithm demos
-- NumPy beginner examples
 
 ## Project Structure
 ```text
 python_project/
 ├── README.md
-├── numpy_learning.py              # NumPy beginner learning script (new)
+├── numpy_learning.py              # NumPy beginner learning script
 ├── anagram_check.py
 ├── dynamic_calculator.py
 ├── most_frequent_element.py
