@@ -73,3 +73,16 @@ def test_run_calculator_handles_division_by_zero_without_crashing(monkeypatch, c
     out = capsys.readouterr().out
     assert "Cannot divide by zero." in out
     assert "Thank you for using Dynamic Calculator!" in out
+
+
+def test_streamlit_calculator_calculate_uses_selected_operation():
+    import streamlit_calculator as web_calc
+
+    assert web_calc.calculate("Multiply", 6, 7) == 42
+
+
+def test_streamlit_calculator_calculate_preserves_division_by_zero_error():
+    import streamlit_calculator as web_calc
+
+    with pytest.raises(ZeroDivisionError, match="Cannot divide by zero"):
+        web_calc.calculate("Divide", 10, 0)

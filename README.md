@@ -16,7 +16,8 @@ python_project/
 ├── README.md
 ├── numpy_learning.py              # NumPy beginner learning script
 ├── anagram_check.py
-├── dynamic_calculator.py
+├── dynamic_calculator.py          # Reusable calculator functions and CLI
+├── streamlit_calculator.py        # Button-based Streamlit calculator web app
 ├── most_frequent_element.py
 ├── most_repetitive.py
 ├── most_repetitive_element.py
@@ -30,7 +31,7 @@ git clone https://github.com/cdasadiya/python_project.git
 cd python_project
 python -m venv .venv
 source .venv/bin/activate
-pip install -U pytest numpy
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -38,6 +39,13 @@ Run any script using:
 ```bash
 python filename.py
 ```
+
+Start the Streamlit calculator website with:
+```bash
+streamlit run streamlit_calculator.py
+```
+
+The web app lets you enter two numbers and click buttons for add, subtract, multiply, and divide operations.
 
 ## Future Improvements
 - Add more NumPy exercises and mini projects
