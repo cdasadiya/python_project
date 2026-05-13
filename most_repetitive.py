@@ -1,4 +1,9 @@
-# Q1: Find the most repetitive element in a list using a dictionary
+"""
+Find the most repetitive element in a list using a dictionary.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
 
 L1 = [1, 2, 2, 3, 2, 3, 4, 5]
 
