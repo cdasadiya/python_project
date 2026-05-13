@@ -1,4 +1,9 @@
-"""Dynamic calculator supporting add, subtract, multiply, and divide operations."""
+"""
+Dynamic calculator supporting add, subtract, multiply, and divide operations.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
 
 
 def add(a: float, b: float) -> float:
