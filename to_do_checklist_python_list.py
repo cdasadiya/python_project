@@ -1,3 +1,10 @@
+"""
+To-Do List Application using Python Lists.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
+
 # -------------------------------
 # To-Do List Application (Lists)
 # -------------------------------
@@ -36,7 +43,7 @@ def mark_tasks():
 
             if status == 'y':
                 completed_tasks.append(task)
-                checklist.remove(task)   # remove from checklist
+                checklist.remove(task)
                 break
             elif status == 'n':
                 incomplete_tasks.append(task)
@@ -63,7 +70,7 @@ def remove_task():
         idx = int(input("Enter task number to remove: "))
         if idx < 1 or idx > len(checklist):
             raise IndexError
-        removed = checklist.pop(idx - 1)   # pop used
+        removed = checklist.pop(idx - 1)
         print(f"Removed: {removed}")
     except (ValueError, IndexError):
         print("Invalid selection.")
@@ -71,23 +78,17 @@ def remove_task():
 def advanced_list_ops():
     print("\n--- Advanced List Operations Demo ---")
 
-    # Extend example
     bonus_tasks = ["Meditation", "Journaling"]
     checklist.extend(bonus_tasks)
 
-    # Insert example
     checklist.insert(0, "Check emails")
 
-    # Sort example
     checklist.sort()
 
-    # Reverse example
     checklist.reverse()
 
-    # Count example
     print("Count of 'Workout':", checklist.count("Workout"))
 
-    # Index example
     if "Workout" in checklist:
         print("Index of 'Workout':", checklist.index("Workout"))
 
@@ -126,6 +127,5 @@ def menu():
         else:
             print("Invalid choice.")
 
-# Run the app
 if __name__ == "__main__":
     menu()
