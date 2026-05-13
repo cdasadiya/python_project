@@ -1,4 +1,9 @@
-"""Find the most repetitive element(s) in a list-like input."""
+"""
+Find the most repetitive element(s) in a list-like input.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
 
 from collections import Counter
 from typing import Any, Iterable
@@ -49,12 +54,7 @@ def all_most_repetitive_elements(values: Iterable[Any]) -> list[Any]:
 
 
 def parse_csv_numbers(raw: str) -> list[float | int]:
-    """Parse comma-separated numeric text into a list.
-
-    Examples:
-    - ``"1,2,2,3"`` -> ``[1, 2, 2, 3]``
-    - ``"1, 2.5, -3"`` -> ``[1, 2.5, -3]``
-    """
+    """Parse comma-separated numeric text into a list."""
 
     cleaned = raw.strip()
     if not cleaned:
