@@ -1,4 +1,9 @@
-"""Streamlit web app for the basic calculator."""
+"""
+Streamlit web app for the basic calculator.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
 
 from dynamic_calculator import add, divide, multiply, subtract
 
