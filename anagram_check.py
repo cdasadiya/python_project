@@ -1,4 +1,10 @@
-# Q2: Check if given word pairs are anagrams using a dictionary
+"""
+Check if given word pairs are anagrams using a dictionary.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
+
 
 def is_anagram(str1, str2):
     if len(str1) != len(str2):
