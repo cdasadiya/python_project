@@ -1,3 +1,10 @@
+"""
+Pandas Methods Demonstration Script.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
+
 import pandas as pd
 
 # Sample Data
