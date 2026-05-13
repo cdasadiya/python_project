@@ -1,4 +1,9 @@
-# Find the most repetitive element in a list
+"""
+Find the most repetitive element in a list.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+"""
 
 # Input list
 L1 = [1, 2, 2, 3, 2, 3, 4, 5]
