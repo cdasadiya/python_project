@@ -6,6 +6,15 @@ This repository focuses on strengthening core Python programming skills through 
 
 ---
 
+## Author
+
+**Chirag Dasadiya**
+
+- GitHub: https://github.com/cdasadiya
+- Focus Areas: Python Development, Automation, AI Engineering
+
+---
+
 ## Features
 
 - Command-line utilities
