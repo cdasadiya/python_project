@@ -24,6 +24,7 @@ This repository is designed to strengthen **core Python programming skills** thr
 - 🌐 **Web applications** using Streamlit
 - 🧪 **Testing patterns** and best practices
 - 📊 **NumPy foundations** and scientific computing
+- ✅ **Pydantic validation** with nested models, validators, and serialization
 
 ---
 
@@ -48,7 +49,7 @@ This repository is designed to strengthen **core Python programming skills** thr
 | **📈 Algorithms** | Anagram detection, Frequency analysis, Repetitive element finding, Counter & Dictionary usage |
 | **🖥️ CLI Tools** | Dynamic calculator, Interactive to-do checklist, User input handling, Error management |
 | **🌐 Web Apps** | Streamlit calculator, Interactive interfaces, Lightweight deployment |
-| **🔧 Utilities** | String manipulation, Data structure practice, Reusable functions, NumPy scripts |
+| **🔧 Utilities** | String manipulation, Data structure practice, Reusable functions, NumPy scripts, Pydantic models |
 | **🧪 Testing** | Unit testing foundations, Pytest integration, Test coverage |
 
 ---
@@ -59,6 +60,7 @@ This repository is designed to strengthen **core Python programming skills** thr
 python_project/
 ├── 📄 README.md                          # Project documentation
 ├── 📊 numpy_learning.py                  # NumPy fundamentals & operations
+├── ✅ pydantic_validation_demo.py        # Pydantic validation models & helpers
 ├── 🔤 anagram_check.py                   # Anagram detection algorithm
 ├── 🧮 dynamic_calculator.py              # Interactive CLI calculator
 ├── 🌐 streamlit_calculator.py            # Web-based calculator app
@@ -115,6 +117,17 @@ python to_do_checklist_python_list.py
 - 💾 List manipulation patterns
 - 🎯 Menu-driven interface
 - 🏗️ Structured data management
+
+
+**Pydantic Validation Demo**
+```bash
+python pydantic_validation_demo.py
+```
+- 🧱 Nested models for users, addresses, products, and orders
+- ✅ Field constraints for emails, IDs, quantities, prices, and postal codes
+- 🔄 Validators for tag normalization and cross-field shipping rules
+- 🧮 Computed fields for line totals and order totals
+- 📦 JSON parsing and serialization helpers
 
 **Concepts Demonstrated:**
 - ⌨️ User input handling (input(), sys)
@@ -221,6 +234,7 @@ pytest --cov=.
 |------|---------|
 | **Python** | Core programming language (3.8+) |
 | **NumPy** | Numerical computing and arrays |
+| **Pydantic** | Data validation, parsing, and serialization |
 | **Streamlit** | Web application framework |
 | **Pytest** | Testing framework |
 | **Collections** | Advanced data structures |
@@ -237,6 +251,7 @@ pytest --cov=.
 ✅ Algorithm design and optimization  
 ✅ Data structure usage and manipulation  
 ✅ Unit testing and test-driven development  
+✅ Pydantic data validation and serialization
 ✅ Error handling and validation  
 ✅ Python project structuring and configuration  
 
