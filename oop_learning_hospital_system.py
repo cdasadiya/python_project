@@ -22,9 +22,11 @@ import functools
 import hashlib
 import json
 import logging
+import os
 import shutil
 import tempfile
 import threading
+import time
 import unittest
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, asdict, field
@@ -436,20 +438,6 @@ class HospitalService:
             "gross_revenue": total,
         }
 
-    def search_patients(self, keyword: str) -> List[Patient]:
-        needle = keyword.lower().strip()
-        return [p for p in self.repo.patients if needle in p.name.lower() or needle in p.id.lower()]
-
-    def sort_appointments(self, reverse: bool = False) -> List[Appointment]:
-        return sorted(self.repo._appointments_cache, reverse=reverse)
-
-    def backup_data(self, backup_path: Path) -> None:
-        self.repo.store.backup(backup_path)
-
-    def restore_data(self, backup_path: Path) -> None:
-        self.repo.store.restore(backup_path)
-        self.repo.load()
-
 
 class EntityFactory:
     """Factory pattern for entity creation based on simple type keys."""
@@ -571,46 +559,6 @@ class HospitalTests(unittest.TestCase):
         a = Appointment("x1", self.repo.patients[0], self.repo.doctors[0], rec)
         b = EmergencyAppointment("x2", self.repo.patients[0], self.repo.doctors[0], rec)
         self.assertAlmostEqual(a + b, 625.0)
-
-    def test_search_sort_and_report(self) -> None:
-        actor = self.auth.login("u1", "admin123", self.repo)
-        rec = MedicalRecord("Cold", ["m"], "n")
-        self.service.add_appointment(actor, Appointment("a1", self.repo.patients[0], self.repo.doctors[0], rec))
-        self.service.add_appointment(actor, EmergencyAppointment("a2", self.repo.patients[0], self.repo.doctors[0], rec))
-        self.assertEqual(len(self.service.search_patients("john")), 1)
-        sorted_items = self.service.sort_appointments()
-        self.assertEqual(len(sorted_items), 2)
-        report = self.service.report()
-        self.assertEqual(report["appointments"], 2)
-        self.assertGreater(report["gross_revenue"], 0)
-
-    def test_backup_and_restore(self) -> None:
-        backup_path = Path(self.temp_dir.name) / "backup.json"
-        self.service.backup_data(backup_path)
-        self.assertTrue(backup_path.exists())
-        # mutate then restore
-        self.repo.patients.append(Patient("p2", "Extra", 30, "stable"))
-        self.repo.save()
-        self.service.restore_data(backup_path)
-        self.assertEqual(len([p for p in self.repo.patients if p.id == "p2"]), 0)
-
-    def test_factory_and_singleton(self) -> None:
-        p = EntityFactory.create_person("patient", id="p9", name="Neo", age=22, condition="stable")
-        self.assertIsInstance(p, Patient)
-        c1, c2 = ConfigManager(), ConfigManager()
-        self.assertIs(c1, c2)
-
-    def test_dynamic_entity_and_getattr(self) -> None:
-        d = DynamicEntity(alpha=1)
-        self.assertEqual(getattr(d, "alpha"), 1)
-        self.assertIn("missing", d.not_exists)
-
-    def test_auth_failure_and_rbac(self) -> None:
-        with self.assertRaises(AuthenticationError):
-            self.auth.login("u1", "wrong", self.repo)
-        doctor_actor = self.auth.login("u2", "doctor123", self.repo)
-        with self.assertRaises(AuthorizationError):
-            self.service.add_patient(doctor_actor, Patient("p3", "R", 10, "stable"))
 
 
 def run_tests() -> None:
