@@ -1,4 +1,24 @@
-streamlit>=1.30
-pytest>=7.0
+# Core Data Science Libraries
 numpy>=1.24
+pandas>=1.5
 pydantic[email]>=2.7
+
+# Web Framework
+streamlit>=1.30
+
+# Web Scraping Libraries
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=4.9
+httpx>=0.24
+
+# Advanced Async & Concurrency
+aiohttp>=3.8
+fake-useragent>=1.2
+
+# Browser Automation (optional but included for complete web scraping)
+selenium>=4.13
+playwright>=1.40
+
+# Testing & Development
+pytest>=7.0
