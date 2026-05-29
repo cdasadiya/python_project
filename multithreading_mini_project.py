@@ -5,7 +5,7 @@ parts of Python's standard-library threading toolkit::
 
     python multithreading_mini_project.py
 
-The project is intentionally kept in one file.  It models a tiny "order
+The project is intentionally kept in one file. It models a tiny "order
 processing center" where many worker threads prepare orders while shared
 state is protected with synchronization primitives.
 
@@ -24,7 +24,7 @@ Covered topics
 * queue.Queue: safely pass tasks between threads.
 * ThreadPoolExecutor: a higher-level pool API built on threads.
 
-Note: Python threads are excellent for I/O-bound work and coordination.  For
+Note: Python threads are excellent for I/O-bound work and coordination. For
 CPU-heavy parallelism, use multiprocessing or native/vectorized libraries
 because CPython's Global Interpreter Lock (GIL) limits simultaneous execution
 of Python bytecode in multiple threads.
@@ -38,11 +38,11 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Callable, Iterable, TextIO
 
 
-# Keep the demo deterministic enough for learning while still looking like work.
-random.seed(7)
+DEFAULT_STOCK = {"book": 3, "pen": 4, "bag": 2}
+DEFAULT_ORDER_ITEMS = ("book", "pen", "bag", "book", "pen", "bag", "book", "pen", "pen", "bag")
 
 
 @dataclass(frozen=True)
@@ -53,18 +53,41 @@ class Order:
     item: str
     prep_seconds: float
 
+    def __post_init__(self) -> None:
+        if self.order_id <= 0:
+            raise ValueError("order_id must be a positive integer")
+        if not self.item:
+            raise ValueError("item must be a non-empty string")
+        if self.prep_seconds < 0:
+            raise ValueError("prep_seconds cannot be negative")
+
+
+@dataclass(frozen=True)
+class ProcessingSummary:
+    """Immutable result returned by OrderProcessingCenter.run()."""
+
+    reserved_orders: int
+    out_of_stock_orders: int
+    remaining_stock: dict[str, int]
+    audit_lines: tuple[str, ...]
+    reached_target: bool
+
 
 class Inventory:
     """Shared inventory protected by Lock.
 
-    Lock usage: every read or write of ``stock`` and ``processed_orders`` is
+    Lock usage: every read or write of stock and reserved order counters is
     done inside ``with self._lock`` so two worker threads cannot update those
     values at the same time.
     """
 
     def __init__(self, initial_stock: dict[str, int]) -> None:
+        if any(quantity < 0 for quantity in initial_stock.values()):
+            raise ValueError("initial_stock cannot contain negative quantities")
+
         self.stock = initial_stock.copy()
-        self.processed_orders = 0
+        self.reserved_orders = 0
+        self.out_of_stock_orders = 0
         self._lock = threading.Lock()
 
     def reserve_item(self, item: str) -> bool:
@@ -73,48 +96,72 @@ class Inventory:
         with self._lock:
             available = self.stock.get(item, 0)
             if available <= 0:
+                self.out_of_stock_orders += 1
                 return False
             self.stock[item] = available - 1
-            self.processed_orders += 1
+            self.reserved_orders += 1
             return True
 
-    def snapshot(self) -> tuple[dict[str, int], int]:
+    def snapshot(self) -> tuple[dict[str, int], int, int]:
         """Return a consistent copy of shared state while holding the lock."""
 
         with self._lock:
-            return self.stock.copy(), self.processed_orders
+            return self.stock.copy(), self.reserved_orders, self.out_of_stock_orders
 
 
 class ReentrantAuditLog:
     """Audit logger that demonstrates RLock.
 
     RLock usage: ``write_order_event`` acquires the lock and calls
-    ``_write_line``, which also acquires the same lock.  A normal Lock would
+    ``_write_line``, which also acquires the same lock. A normal Lock would
     deadlock here; RLock allows re-entry by the owning thread.
     """
 
     def __init__(self) -> None:
         self._lock = threading.RLock()
-        self.lines: list[str] = []
+        self._lines: list[str] = []
 
     def write_order_event(self, order: Order, status: str) -> None:
+        """Append a thread-safe audit line for an order status change."""
+
         with self._lock:
             self._write_line(f"order={order.order_id} item={order.item} status={status}")
 
     def _write_line(self, text: str) -> None:
         with self._lock:
-            self.lines.append(f"{threading.current_thread().name}: {text}")
+            self._lines.append(f"{threading.current_thread().name}: {text}")
+
+    def snapshot(self) -> tuple[str, ...]:
+        """Return an immutable copy of audit lines for safe external reading."""
+
+        with self._lock:
+            return tuple(self._lines)
 
 
 class OrderProcessingCenter:
     """Mini application that combines the low-level threading primitives."""
 
-    def __init__(self, orders: Iterable[Order], worker_count: int = 3) -> None:
+    def __init__(
+        self,
+        orders: Iterable[Order],
+        worker_count: int = 3,
+        initial_stock: dict[str, int] | None = None,
+        sleep: Callable[[float], None] = time.sleep,
+        output: TextIO | None = None,
+    ) -> None:
+        if worker_count <= 0:
+            raise ValueError("worker_count must be greater than zero")
+
         self.orders = list(orders)
         self.worker_count = worker_count
         self.tasks: queue.Queue[Order | None] = queue.Queue()
-        self.inventory = Inventory({"book": 3, "pen": 4, "bag": 2})
+        self.inventory = Inventory(DEFAULT_STOCK if initial_stock is None else initial_stock)
         self.audit_log = ReentrantAuditLog()
+        self.sleep = sleep
+        self.output = output
+        self.worker_errors: list[BaseException] = []
+        self._worker_errors_lock = threading.Lock()
+        self._orders_loaded = False
 
         # Event: workers wait until the manager signals that work may start.
         self.start_event = threading.Event()
@@ -122,7 +169,7 @@ class OrderProcessingCenter:
         # Event: a graceful stop flag checked by workers between tasks.
         self.stop_event = threading.Event()
 
-        # Condition: manager waits until processed_orders reaches a target.
+        # Condition: manager waits until reserved_orders reaches a target.
         self.progress_condition = threading.Condition()
 
         # Barrier: all workers announce readiness before the manager starts work.
@@ -137,6 +184,9 @@ class OrderProcessingCenter:
         # local: each thread gets its own independent attributes.
         self.thread_context = threading.local()
 
+    def _emit(self, message: str) -> None:
+        print(message, file=self.output)
+
     def load_orders(self) -> None:
         """Put orders into Queue, followed by one sentinel per worker.
 
@@ -144,27 +194,47 @@ class OrderProcessingCenter:
         can safely call ``put`` and ``get`` from different threads.
         """
 
+        if self._orders_loaded:
+            raise RuntimeError("orders have already been loaded")
+
         for order in self.orders:
             self.tasks.put(order)
         for _ in range(self.worker_count):
             self.tasks.put(None)
+        self._orders_loaded = True
 
     def worker(self, worker_number: int) -> None:
         """Thread target that processes orders until a sentinel is received."""
 
-        self.thread_context.worker_number = worker_number
-        print(f"{threading.current_thread().name} ready with local worker_number={worker_number}")
-        self.ready_barrier.wait()
-        self.start_event.wait()
+        try:
+            self.thread_context.worker_number = worker_number
+            self._emit(
+                f"{threading.current_thread().name} ready "
+                f"with local worker_number={self.thread_context.worker_number}"
+            )
+            self.ready_barrier.wait(timeout=5)
+            self.start_event.wait(timeout=5)
 
-        while not self.stop_event.is_set():
-            order = self.tasks.get()
-            try:
-                if order is None:
-                    return
-                self._process_order(order)
-            finally:
-                self.tasks.task_done()
+            while not self.stop_event.is_set():
+                try:
+                    order = self.tasks.get(timeout=1)
+                except queue.Empty:
+                    if self.stop_event.is_set():
+                        return
+                    continue
+
+                try:
+                    if order is None:
+                        return
+                    self._process_order(order)
+                finally:
+                    self.tasks.task_done()
+        except BaseException as exc:
+            self.stop_event.set()
+            with self._worker_errors_lock:
+                self.worker_errors.append(exc)
+            self._discard_pending_tasks()
+            self._notify_progress()
 
     def _process_order(self, order: Order) -> None:
         """Reserve inventory, simulate I/O, and report progress."""
@@ -174,16 +244,31 @@ class OrderProcessingCenter:
             self._notify_progress()
             return
 
-        time.sleep(order.prep_seconds)
+        self.sleep(order.prep_seconds)
 
         with self.packing_stations:
-            time.sleep(0.03)
+            self.sleep(0.03)
 
         with self.printers:
-            time.sleep(0.01)
+            self.sleep(0.01)
             self.audit_log.write_order_event(order, "packed-and-labeled")
 
         self._notify_progress()
+
+    def _discard_pending_tasks(self) -> None:
+        """Mark queued-but-unstarted tasks done after a worker failure.
+
+        This keeps ``Queue.join`` from blocking forever if an unexpected worker
+        exception occurs before every queued item has been consumed.
+        """
+
+        while True:
+            try:
+                self.tasks.get_nowait()
+            except queue.Empty:
+                return
+            else:
+                self.tasks.task_done()
 
     def _notify_progress(self) -> None:
         """Wake threads waiting on the Condition after progress changes."""
@@ -194,15 +279,18 @@ class OrderProcessingCenter:
     def wait_until_processed(self, target: int, timeout: float = 3.0) -> bool:
         """Wait with Condition until at least ``target`` orders were reserved."""
 
+        if target < 0:
+            raise ValueError("target cannot be negative")
+
         def enough_orders_processed() -> bool:
-            _stock, processed = self.inventory.snapshot()
-            return processed >= target
+            _stock, reserved, _out_of_stock = self.inventory.snapshot()
+            return reserved >= target or bool(self.worker_errors)
 
         with self.progress_condition:
             return self.progress_condition.wait_for(enough_orders_processed, timeout=timeout)
 
-    def run(self) -> None:
-        """Create Thread objects, coordinate them, and print final state."""
+    def run(self, progress_target: int = 4) -> ProcessingSummary:
+        """Create Thread objects, coordinate them, print final state, and return it."""
 
         self.load_orders()
         workers = [
@@ -213,78 +301,117 @@ class OrderProcessingCenter:
         for thread in workers:
             thread.start()
 
-        self.ready_barrier.wait()
-        print(f"Active threads after start: {threading.active_count()}")
-        print("Thread names:", ", ".join(thread.name for thread in threading.enumerate()))
+        self.ready_barrier.wait(timeout=5)
+        self._emit(f"Active threads after start: {threading.active_count()}")
+        self._emit("Thread names: " + ", ".join(thread.name for thread in threading.enumerate()))
 
         self.start_event.set()
-        reached_target = self.wait_until_processed(target=4)
-        print(f"Condition reached target of 4 reserved orders: {reached_target}")
+        reached_target = self.wait_until_processed(target=progress_target)
+        self._emit(f"Condition reached target of {progress_target} reserved orders: {reached_target}")
 
         self.tasks.join()
         for thread in workers:
-            thread.join()
+            thread.join(timeout=5)
+            if thread.is_alive():
+                raise RuntimeError(f"{thread.name} did not stop cleanly")
 
-        stock, processed = self.inventory.snapshot()
-        print(f"Processed/reserved orders: {processed}")
-        print(f"Remaining stock: {stock}")
-        print("Audit sample:")
-        for line in self.audit_log.lines[:5]:
-            print(f"  {line}")
+        if self.worker_errors:
+            raise RuntimeError("worker thread failed") from self.worker_errors[0]
+
+        stock, reserved, out_of_stock = self.inventory.snapshot()
+        audit_lines = self.audit_log.snapshot()
+        self._emit(f"Reserved orders: {reserved}")
+        self._emit(f"Out-of-stock orders: {out_of_stock}")
+        self._emit(f"Remaining stock: {stock}")
+        self._emit("Audit sample:")
+        for line in audit_lines[:5]:
+            self._emit(f"  {line}")
+
+        return ProcessingSummary(
+            reserved_orders=reserved,
+            out_of_stock_orders=out_of_stock,
+            remaining_stock=stock,
+            audit_lines=audit_lines,
+            reached_target=reached_target,
+        )
 
 
-def demonstrate_timer() -> None:
+def demonstrate_timer(delay: float = 0.05, output: TextIO | None = None) -> bool:
     """Timer usage: run a function after a short delay, then join it."""
 
+    fired = threading.Event()
+
     def reminder() -> None:
-        print("Timer fired: remember to review thread results.")
+        print("Timer fired: remember to review thread results.", file=output)
+        fired.set()
 
-    timer = threading.Timer(0.05, reminder)
+    timer = threading.Timer(delay, reminder)
     timer.start()
-    timer.join()
+    timer.join(timeout=delay + 1)
+    return fired.is_set()
 
 
-def demonstrate_thread_pool_executor() -> None:
+def demonstrate_thread_pool_executor(
+    order_ids: Iterable[int] = range(1, 6),
+    max_workers: int = 3,
+    output: TextIO | None = None,
+) -> list[str]:
     """ThreadPoolExecutor usage: submit callables and collect Future results."""
 
+    if max_workers <= 0:
+        raise ValueError("max_workers must be greater than zero")
+
     def fetch_tracking_status(order_id: int) -> str:
-        time.sleep(random.uniform(0.01, 0.04))
+        time.sleep(0.01 + (order_id % 3) * 0.005)
         return f"order {order_id}: tracking-ready"
 
-    with ThreadPoolExecutor(max_workers=3, thread_name_prefix="pool-worker") as executor:
-        futures = [executor.submit(fetch_tracking_status, order_id) for order_id in range(1, 6)]
+    results: list[str] = []
+    with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="pool-worker") as executor:
+        futures = [executor.submit(fetch_tracking_status, order_id) for order_id in order_ids]
         for future in as_completed(futures):
-            print(f"ThreadPoolExecutor result: {future.result()}")
+            result = future.result()
+            results.append(result)
+            print(f"ThreadPoolExecutor result: {result}", file=output)
+    return sorted(results)
 
 
-def demonstrate_daemon_thread() -> None:
+def demonstrate_daemon_thread(output: TextIO | None = None) -> bool:
     """Daemon Thread usage: background work that should not block program exit.
 
     Daemon threads are useful for best-effort background tasks, but they can be
-    stopped abruptly when only daemon threads remain.  Do not use them for work
+    stopped abruptly when only daemon threads remain. Do not use them for work
     that must be completed or cleaned up reliably.
     """
 
+    stop_heartbeat = threading.Event()
+    heartbeat_count = 0
+    heartbeat_lock = threading.Lock()
+
     def heartbeat() -> None:
+        nonlocal heartbeat_count
         while not stop_heartbeat.is_set():
-            print("daemon heartbeat")
+            with heartbeat_lock:
+                heartbeat_count += 1
+            print("daemon heartbeat", file=output)
             time.sleep(0.03)
 
-    stop_heartbeat = threading.Event()
     thread = threading.Thread(target=heartbeat, name="daemon-heartbeat", daemon=True)
     thread.start()
     time.sleep(0.07)
     stop_heartbeat.set()
     thread.join(timeout=1)
 
+    with heartbeat_lock:
+        return heartbeat_count > 0 and not thread.is_alive()
 
-def build_sample_orders() -> list[Order]:
-    """Create predictable demo data for the mini project."""
 
-    items = ["book", "pen", "bag", "book", "pen", "bag", "book", "pen", "pen", "bag"]
+def build_sample_orders(seed: int = 7) -> list[Order]:
+    """Create predictable demo data for the mini project without global randomness."""
+
+    rng = random.Random(seed)
     return [
-        Order(order_id=index, item=item, prep_seconds=random.uniform(0.01, 0.05))
-        for index, item in enumerate(items, start=1)
+        Order(order_id=index, item=item, prep_seconds=rng.uniform(0.01, 0.05))
+        for index, item in enumerate(DEFAULT_ORDER_ITEMS, start=1)
     ]
 
 
