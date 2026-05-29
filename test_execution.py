@@ -16,6 +16,7 @@ TEST_FILES = [
     "most_frequent_element.py",
     "most_repetitive.py",
     "most_repetitive_element.py",
+    "multithreading_mini_project.py",
     "numpy_learning.py",
     "oop_learning_hospital_system.py",
     "pandas_methods_demo.py",
@@ -25,7 +26,7 @@ TEST_FILES = [
     "webscraping_learning_framework.py",
 ]
 
-def test_file_with_stdin(filepath, test_input=""):
+def run_file_with_stdin(filepath, test_input=""):
     """Execute a Python file with provided stdin input."""
     try:
         result = subprocess.run(
@@ -76,7 +77,7 @@ def main():
         else:
             test_input = ""
         
-        returncode, stdout, stderr = test_file_with_stdin(filepath, test_input)
+        returncode, stdout, stderr = run_file_with_stdin(filepath, test_input)
         
         if returncode == 0:
             results[filename] = ("PASS", stdout[:200])
