@@ -3,6 +3,7 @@ NumPy Learning Script for Beginners.
 
 Author: Chaitanya Dasadiya
 GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 # Covers core NumPy concepts with simple examples and explanations

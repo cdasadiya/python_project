@@ -3,6 +3,7 @@ Check if given word pairs are anagrams using a dictionary.
 
 Author: Chaitanya Dasadiya
 GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 

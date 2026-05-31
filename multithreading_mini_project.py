@@ -28,6 +28,10 @@ Note: Python threads are excellent for I/O-bound work and coordination. For
 CPU-heavy parallelism, use multiprocessing or native/vectorized libraries
 because CPython's Global Interpreter Lock (GIL) limits simultaneous execution
 of Python bytecode in multiple threads.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 from __future__ import annotations
