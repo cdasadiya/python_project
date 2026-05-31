@@ -3,6 +3,7 @@ Find the most repetitive element(s) in a list-like input.
 
 Author: Chaitanya Dasadiya
 GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 from collections import Counter

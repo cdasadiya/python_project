@@ -17,6 +17,10 @@ It includes:
 - Custom tzinfo class for advanced timezone handling
 - Error handling and beginner-friendly explanations
 - Interview questions and practice exercises
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 from __future__ import annotations

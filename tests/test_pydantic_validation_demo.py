@@ -1,3 +1,9 @@
+"""
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
+"""
+
 import json
 import sys
 from datetime import datetime, timezone

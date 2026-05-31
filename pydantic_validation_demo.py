@@ -11,6 +11,7 @@ This module demonstrates practical Pydantic v2 features:
 
 Author: Chaitanya Dasadiya
 GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 from datetime import datetime, timezone

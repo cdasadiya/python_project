@@ -12,6 +12,10 @@ IMPORTANT:
 - Some optional features (Selenium/Playwright) require external browser setup.
 
 Python: 3.11+
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 from __future__ import annotations

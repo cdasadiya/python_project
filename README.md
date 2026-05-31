@@ -35,6 +35,7 @@ This repository is designed to strengthen **core Python programming skills** thr
 <td align="center">
 <strong>Chaitanya Dasadiya</strong><br/>
 <a href="https://github.com/cdasadiya">@cdasadiya</a><br/>
+<a href="https://in.linkedin.com/in/chaitanya-dasadiya">LinkedIn</a><br/>
 <sub>Python Developer | AI Engineering Enthusiast | Automation Specialist</sub>
 </td>
 </tr>
@@ -334,6 +335,6 @@ Contributions are welcome! If you'd like to improve this project:
 
 **⭐ If you find this project helpful, please consider giving it a star!**
 
-Made with ❤️ by [Chaitanya Dasadiya](https://github.com/cdasadiya)
+Made with ❤️ by [Chaitanya Dasadiya](https://github.com/cdasadiya) · [LinkedIn](https://in.linkedin.com/in/chaitanya-dasadiya)
 
 </div>

@@ -2,6 +2,10 @@
 """
 Comprehensive test script to execute all Python files in the repository.
 This script tests each file individually and reports success/failure.
+
+Author: Chaitanya Dasadiya
+GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 import subprocess

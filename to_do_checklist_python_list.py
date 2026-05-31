@@ -3,6 +3,7 @@ To-Do List Application using Python Lists.
 
 Author: Chaitanya Dasadiya
 GitHub: https://github.com/cdasadiya
+LinkedIn: https://in.linkedin.com/in/chaitanya-dasadiya
 """
 
 # -------------------------------
