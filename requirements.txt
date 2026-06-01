@@ -1,24 +1,72 @@
-# Core Data Science Libraries
-numpy>=1.24
-pandas>=1.5
-pydantic[email]>=2.7
+# Core Python Lab - Project Dependencies
+# Updated: June 2026
+# Python 3.8+ required
 
-# Web Framework
-streamlit>=1.30
+# ============================================================================
+# Data Science & Scientific Computing
+# ============================================================================
+# NumPy for numerical operations and array manipulation
+numpy>=1.24.0
 
-# Web Scraping Libraries
-requests>=2.31
-beautifulsoup4>=4.12
-lxml>=4.9
-httpx>=0.24
+# Pandas for data manipulation and analysis
+pandas>=1.5.0
 
+# Pydantic for data validation and serialization
+pydantic[email]>=2.7.0
+
+# ============================================================================
+# Web Framework & UI
+# ============================================================================
+# Streamlit for building interactive web applications
+streamlit>=1.30.0
+
+# ============================================================================
+# HTTP & Web Scraping
+# ============================================================================
+# Requests for HTTP requests
+requests>=2.31.0
+
+# BeautifulSoup4 for HTML parsing and web scraping
+beautifulsoup4>=4.12.0
+
+# LXML for fast XML and HTML processing
+lxml>=4.9.0
+
+# HTTPX for async HTTP operations
+httpx>=0.24.0
+
+# ============================================================================
 # Advanced Async & Concurrency
-aiohttp>=3.8
-fake-useragent>=1.2
+# ============================================================================
+# AIOHTTP for async HTTP client/server
+aiohttp>=3.8.0
 
-# Browser Automation (optional but included for complete web scraping)
-selenium>=4.13
-playwright>=1.40
+# Fake-useragent for rotating user agents in requests
+fake-useragent>=1.2.0
 
+# ============================================================================
+# Browser Automation (Optional)
+# ============================================================================
+# Selenium for browser automation (optional but included)
+selenium>=4.13.0
+
+# Playwright for browser automation (optional but included)
+playwright>=1.40.0
+
+# ============================================================================
 # Testing & Development
-pytest>=7.0
+# ============================================================================
+# Pytest for unit testing and test discovery
+pytest>=7.0.0
+
+# Pytest-cov for code coverage reports
+pytest-cov>=4.1.0
+
+# ============================================================================
+# Code Quality & Development Tools (Optional)
+# ============================================================================
+# Uncomment these for linting and formatting:
+# black>=23.0.0          # Code formatter
+# flake8>=6.0.0          # Linter
+# mypy>=1.0.0            # Static type checker
+# pylint>=2.17.0         # Code analysis
