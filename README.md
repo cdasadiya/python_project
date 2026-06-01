@@ -885,32 +885,160 @@ Check it out and contribute! Open source contributions welcome.
 
 ## 📖 Resources & References
 
-### Official Documentation
-- [Python 3 Official Docs](https://docs.python.org/3/)
-- [PEP 8 Style Guide](https://www.python.org/dev/peps/pep-0008/)
-- [Type Hints Guide](https://docs.python.org/3/library/typing.html)
-- [PEP 257 Docstring Conventions](https://www.python.org/dev/peps/pep-0257/)
+### 📚 Python Standard Library Documentation
 
-### Libraries Used
-- [NumPy Documentation](https://numpy.org/doc/)
-- [Pandas Documentation](https://pandas.pydata.org/docs/)
-- [Pydantic Documentation](https://docs.pydantic.dev/)
-- [Streamlit Documentation](https://docs.streamlit.io/)
-- [Pytest Documentation](https://docs.pytest.org/)
-- [BeautifulSoup Documentation](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
-- [Selenium Documentation](https://selenium.dev/documentation/)
+These files in this repository directly implement and use Python's built-in modules:
 
-### Learning Resources
-- [Real Python Tutorials](https://realpython.com/)
-- [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/)
-- [Python Design Patterns](https://refactoring.guru/design-patterns/python)
-- [Async IO in Python](https://docs.python.org/3/library/asyncio.html)
-- [Python Concurrency Guide](https://realpython.com/intro-to-python-threading/)
+#### Collections Module
+- **Files:** `most_repetitive.py`, `most_repetitive_element.py`
+- **Usage:** Counter, defaultdict for efficient frequency analysis
+- **Official Docs:** https://docs.python.org/3/library/collections.html
 
-### Advanced Topics
-- [Effective Python](https://effectivepython.com/)
-- [Fluent Python](https://www.oreilly.com/library/view/fluent-python-2nd/9781492126522/)
-- [Clean Code in Python](https://github.com/PacktPublishing/Clean-Code-in-Python)
+#### DateTime Module
+- **Files:** `datetime_master_utility.py`
+- **Usage:** Date/time operations, formatting, timezone handling
+- **Official Docs:** https://docs.python.org/3/library/datetime.html
+
+#### Threading & Concurrency Modules
+- **Files:** `multithreading_mini_project.py`
+- **Modules Used:** threading, Lock, RLock, Semaphore, Event, Condition, Barrier, Queue, ThreadPoolExecutor
+- **Official Docs:** https://docs.python.org/3/library/threading.html
+- **Async Docs:** https://docs.python.org/3/library/asyncio.html
+
+#### Regular Expressions
+- **Usage:** Pattern matching in various scripts
+- **Official Docs:** https://docs.python.org/3/library/re.html
+
+#### Logging Module
+- **Usage:** Error handling and monitoring throughout project
+- **Official Docs:** https://docs.python.org/3/library/logging.html
+
+#### JSON/Serialization
+- **Usage:** Data serialization in validation demos
+- **Official Docs:** https://docs.python.org/3/library/json.html
+
+---
+
+### 🔗 Associated Library Documentation
+
+These external Python libraries are used throughout the project:
+
+#### NumPy
+- **File:** `numpy_learning.py`
+- **Purpose:** Numerical computing and array operations
+- **Official Docs:** https://numpy.org/doc/
+- **Installation:** `pip install numpy>=1.24.0`
+- **Key Methods Used:** array creation, broadcasting, aggregations, indexing
+
+#### Pandas
+- **File:** `pandas_methods_demo.py`
+- **Purpose:** Data manipulation and analysis with DataFrames
+- **Official Docs:** https://pandas.pydata.org/docs/
+- **Installation:** `pip install pandas>=1.5.0`
+- **Key Methods Used:** read_csv, groupby, merge, pivot, apply, rolling
+
+#### Pydantic
+- **File:** `pydantic_validation_demo.py`
+- **Purpose:** Data validation and serialization
+- **Official Docs:** https://docs.pydantic.dev/
+- **Installation:** `pip install pydantic>=2.7.0`
+- **Key Features:** BaseModel, field validators, nested models, JSON schema
+
+#### Streamlit
+- **File:** `streamlit_calculator.py`
+- **Purpose:** Web application framework for interactive dashboards
+- **Official Docs:** https://docs.streamlit.io/
+- **Installation:** `pip install streamlit>=1.30.0`
+- **Key Widgets:** st.button, st.slider, st.input_text, st.write
+
+#### Requests
+- **File:** `webscraping_learning_framework.py`
+- **Purpose:** HTTP requests and response handling
+- **Official Docs:** https://requests.readthedocs.io/
+- **Installation:** `pip install requests>=2.31.0`
+- **Key Methods:** GET, POST, sessions, headers, authentication
+
+#### BeautifulSoup4
+- **File:** `webscraping_learning_framework.py`
+- **Purpose:** HTML parsing and web scraping
+- **Official Docs:** https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+- **Installation:** `pip install beautifulsoup4>=4.12.0`
+- **Key Methods:** find, find_all, select, CSS selectors, tag navigation
+
+#### Selenium
+- **File:** `webscraping_learning_framework.py`
+- **Purpose:** Browser automation for dynamic web scraping
+- **Official Docs:** https://selenium.dev/documentation/
+- **Installation:** `pip install selenium>=4.13.0`
+- **Key Features:** WebDriver, element location, waits, actions
+
+#### AIOHTTP
+- **File:** `webscraping_learning_framework.py`
+- **Purpose:** Async HTTP client for concurrent requests
+- **Official Docs:** https://docs.aiohttp.org/
+- **Installation:** `pip install aiohttp>=3.8.0`
+- **Key Features:** ClientSession, async/await, concurrent requests
+
+#### Pytest
+- **File:** `test_execution.py`, `tests/` directory
+- **Purpose:** Testing framework for unit and integration tests
+- **Official Docs:** https://docs.pytest.org/
+- **Installation:** `pip install pytest>=7.0.0`
+- **Plugins:** pytest-cov for coverage reports
+
+#### Playwright
+- **File:** `webscraping_learning_framework.py`
+- **Purpose:** Browser automation alternative to Selenium
+- **Official Docs:** https://playwright.dev/python/
+- **Installation:** `pip install playwright>=1.40.0`
+- **Key Features:** Chromium, Firefox, WebKit support, network interception
+
+---
+
+### 🐍 Python Enhancement Proposals (PEPs)
+
+These standards are implemented throughout the project:
+
+#### Code Quality Standards
+
+| PEP | Title | Usage |
+|-----|-------|-------|
+| [PEP 8](https://www.python.org/dev/peps/pep-0008/) | Style Guide for Python Code | Applied to all Python files in this repo |
+| [PEP 20](https://www.python.org/dev/peps/pep-0020/) | The Zen of Python | Guiding philosophy: readability, simplicity, explicit is better |
+| [PEP 257](https://www.python.org/dev/peps/pep-0257/) | Docstring Conventions | Comprehensive docstrings on all functions |
+| [PEP 484](https://www.python.org/dev/peps/pep-0484/) | Type Hints | Type annotations on all functions |
+
+#### Language Features
+
+| PEP | Title | Files Using It |
+|-----|-------|-----------------|
+| [PEP 289](https://www.python.org/dev/peps/pep-0289/) | Generator Expressions | Multiple files for efficient iteration |
+| [PEP 343](https://www.python.org/dev/peps/pep-0343/) | Context Managers | Used in file I/O and resource management |
+| [PEP 3156](https://www.python.org/dev/peps/pep-3156/) | Async/await | `webscraping_learning_framework.py` |
+| [PEP 563](https://www.python.org/dev/peps/pep-0563/) | Postponed Evaluation of Annotations | Forward references in type hints |
+
+---
+
+### 📖 Official Python Documentation Links Used
+
+- **Built-in Functions:** https://docs.python.org/3/library/functions.html
+- **Data Types:** https://docs.python.org/3/library/stdtypes.html
+- **Operators:** https://docs.python.org/3/reference/lexical_analysis.html#operators
+- **Control Flow:** https://docs.python.org/3/tutorial/controlflow.html
+- **Functions:** https://docs.python.org/3/tutorial/controlflow.html#defining-functions
+- **Classes:** https://docs.python.org/3/tutorial/classes.html
+- **Decorators:** https://docs.python.org/3/glossary.html#term-decorator
+- **Iterators & Generators:** https://docs.python.org/3/tutorial/classes.html#iterators
+
+---
+
+### 🎯 How to Use This Repository for Learning
+
+1. **Start with Python Official Docs:** Understand core concepts from official Python documentation
+2. **Study the Code:** Each Python file demonstrates real-world usage of documented concepts
+3. **Reference Library Docs:** When using external libraries, refer to their official documentation
+4. **Run and Modify:** Execute scripts and modify them to understand how concepts work
+5. **Test Your Knowledge:** Use pytest and test_execution.py to validate your learning
 
 ---
 
